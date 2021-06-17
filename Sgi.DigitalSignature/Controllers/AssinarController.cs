@@ -34,10 +34,14 @@ namespace Sgi.DigitalSignature.Controllers
             if (!_diretorioArquivoRecebido.Exists)
                 _diretorioArquivoRecebido.Create();
         }
+
+        [HttpGet]
+        public string Inicializar()
+            => "Iniciou com sucesso.";
+
         [HttpPost]
         public IActionResult AssinarArquivo()
         {
-
             var arquivosRecebidos = HttpContext.Request.Form.Files;
 
             var jsonDados = HttpContext.Request.Form[AssinarHelper.FORM_KEY_JSON].ToString();
@@ -195,9 +199,9 @@ namespace Sgi.DigitalSignature.Controllers
             var arquivo = arquivosRecebidos[formKey];
             _validarCampo(arquivo, formKey);
 
-            if (!_operacaoValida())
-                return null;
-            var nomeArquivo = _diretorioArquivoRecebido.FullName + _requestId.ToString() + arquivo.FileName;
+            if (!_operacaoValida()) return null;
+
+            var nomeArquivo = _diretorioArquivoRecebido.FullName + _requestId.ToString() + "." + arquivo.FileName;
 
             using (var stream = new FileStream(nomeArquivo, FileMode.Create))
             {
