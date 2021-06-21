@@ -40,6 +40,8 @@ namespace Sgi.DigitalSignature.Controllers
             => "Iniciou com sucesso.";
 
         [HttpPost]
+        [RequestSizeLimit(6000000000)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 6000000000)]
         public IActionResult AssinarArquivo()
         {
             var arquivosRecebidos = HttpContext.Request.Form.Files;
