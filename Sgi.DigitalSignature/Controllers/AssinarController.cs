@@ -212,8 +212,6 @@ namespace Sgi.DigitalSignature.Controllers
             return new FileInfo(nomeArquivo);
         }
 
-
-
         private bool _operacaoValida() => !_erros.Any();
     }
 }
