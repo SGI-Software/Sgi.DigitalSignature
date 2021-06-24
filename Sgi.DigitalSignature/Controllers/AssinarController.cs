@@ -1,6 +1,7 @@
 ﻿using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Signatures;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -23,16 +24,19 @@ namespace Sgi.DigitalSignature.Controllers
         private const string PASTA_ARQUIVO_ASSINADO = "resultado/";
         private readonly DirectoryInfo _diretorioArquivoRecebido = new DirectoryInfo(Directory.GetCurrentDirectory() + "/wwwroot/tmp/");
         private readonly DirectoryInfo _diretorioArquivoAssinado = new DirectoryInfo(Directory.GetCurrentDirectory() + "/wwwroot/" + PASTA_ARQUIVO_ASSINADO);
+        private readonly IHostingEnvironment _hostingEnvironment;
 
         private readonly List<string> _erros = new List<string>();
 
-        public AssinarController()
+        public AssinarController(IHostingEnvironment hostingEnvironment)
         {
             if (!_diretorioArquivoAssinado.Exists)
                 _diretorioArquivoAssinado.Create();
 
             if (!_diretorioArquivoRecebido.Exists)
                 _diretorioArquivoRecebido.Create();
+
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet]
@@ -99,7 +103,7 @@ namespace Sgi.DigitalSignature.Controllers
 
             var SRC = pdfFileInfo.FullName;
             var DEST = _diretorioArquivoAssinado.FullName + pdfFileInfo.Name;
-            var urlArquivoAssinado = AssinarHelper.BASE_URL(Request) + PASTA_ARQUIVO_ASSINADO + pdfFileInfo.Name;
+            var urlArquivoAssinado = AssinarHelper.BASE_URL(Request, _hostingEnvironment.IsProduction()) + PASTA_ARQUIVO_ASSINADO + pdfFileInfo.Name;
 
             try
             {
